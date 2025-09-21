@@ -21,7 +21,7 @@
     <!-- Columna derecha -->
     <div class="w-1/2 flex items-center justify-center bg-gray-50">
         <div class="w-96 bg-white p-8 rounded-xl shadow-lg">
-            <h2 class="text-2xl font-bold text-center mb-8">Inicio de sesión</h2>
+            <h2 class="text-2xl font-bold text-center mb-8 font-mono">Inicio de sesión</h2>
 
             <!-- Formulario -->
             <form>
@@ -29,9 +29,9 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm mb-1">Usuario:</label>
                     <div class="flex items-center border rounded-lg bg-gray-100 px-3">
-                        <input type="email" placeholder="TaeYUN"
+                        <input type="text" placeholder="TaeYUN"
                                class="w-full py-2 bg-gray-100 focus:outline-none">
-                        <i class="ph ph-envelope-simple text-gray-400"></i>
+                        <i class="ph ph-user text-gray-400"></i>
                     </div>
                 </div>
 
