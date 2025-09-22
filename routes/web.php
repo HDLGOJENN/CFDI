@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -30,3 +31,4 @@ Route::get('/cuentas', function () {
 Route::get('/analisis', function () {
     return view('analisis'); // busca en resources/views/dashboard.blade.php
 });
+
