@@ -1,34 +1,43 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AuthController;
 
-
+// Redirigir la raíz directamente al login
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
-// Rutas para login
-Route::get('/login', function () {
-    return view('login');
-});
+// Ruta para mostrar el formulario de login
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
-// Ruta para vista general
-Route::get('/vistageneral', function () {
-    return view('vistageneral'); // busca en resources/views/dashboard.blade.php
-});
+// Ruta para procesar el login
+Route::post('/login', [AuthController::class, 'login']);
 
-// Ruta para usuarios
-Route::get('/usuarios', function () {
-    return view('usuarios'); // busca en resources/views/dashboard.blade.php
-});
+// Ruta para logout
 
-// Ruta para cuentas
-Route::get('/cuentas', function () {
-    return view('cuentas'); // busca en resources/views/dashboard.blade.php
-});
 
-// Ruta para analisis
-Route::get('/analisis', function () {
-    return view('analisis'); // busca en resources/views/dashboard.blade.php
-});
+// Grupo de rutas protegidas (requieren autenticación)
+Route::middleware(['auth'])->group(function () {
 
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // Ruta principal después del login
+    Route::get('/vistageneral', function () {
+        return view('vistageneral');
+    })->name('vistageneral');
+    
+    // Resto de rutas protegidas
+    Route::get('/usuarios', function () {
+        return view('usuarios');
+    })->name('usuarios');
+    
+    Route::get('/cuentas', function () {
+        return view('cuentas');
+    })->name('cuentas');
+    
+    Route::get('/analisis', function () {
+        return view('analisis');
+    })->name('analisis');
+});
