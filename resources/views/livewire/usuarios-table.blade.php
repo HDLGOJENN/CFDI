@@ -4,6 +4,7 @@
     <div class="flex items-center justify-between">
         <div class="flex items-center w-1/3">
             <input type="text"
+            {{-- conecta el input con q y espera 300ms --}}
                    wire:model.live.debounce.300ms="q"
                    placeholder="Buscar usuario"
                    class="w-full rounded-full border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -60,11 +61,11 @@
         </table>
     </div>
 
-    <!-- Paginación -->
+    <!-- Paginación, se genera automaticamente los botones de paginacion -->
     <div class="mt-4">
         {{ $users->links() }} {{-- Tailwind pagination --}}
     </div>
 
-    <!-- Loader cuando cambia el buscador -->
+    <!--Mientras esta buscando se muestra un msj de cargando Loader cuando cambia el buscador -->
     <div wire:loading wire:target="q" class="text-gray-500">Cargando…</div>
 </div>
