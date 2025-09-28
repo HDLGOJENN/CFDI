@@ -43,7 +43,6 @@ class AuthController extends Controller
             // Redirigir a vista general
             return redirect()->intended('/vistageneral');
         }
-         dd("La autenticación falló. Revisa las credenciales y el hashing de la contraseña.");
 
         // Si falla la autenticación
         return back()->withErrors([

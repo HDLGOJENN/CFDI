@@ -11,9 +11,18 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
-    })
+->withMiddleware(function (Middleware $middleware): void {
+    // Alias para usarlo en rutas
+    $middleware->alias([
+        'prevent-back-history' => \App\Http\Middleware\PreventBackHistory::class,
+    ]);
+
+    // (Opcional) Si algún día quisieras aplicarlo a TODO el grupo web:
+    // $middleware->group('web', [
+    //     \App\Http\Middleware\PreventBackHistory::class,
+    // ]);
+})
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

@@ -6,22 +6,26 @@ use App\Http\Controllers\AuthController;
 
 // Redirigir la raíz directamente al login
 Route::get('/', function () {
-    return redirect('/login');
+    return Auth::check()
+        ? redirect()->route('vistageneral')
+        : redirect()->route('login');
 });
 
+Route::middleware(['guest', 'prevent-back-history'])->group(function () {
 // Ruta para mostrar el formulario de login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 
 // Ruta para procesar el login
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']) ->name('login.attempt');
 
+});
 // Ruta para logout
 
 
 // Grupo de rutas protegidas (requieren autenticación)
 Route::middleware(['auth'])->group(function () {
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('prevent-back-history');
     
     // Ruta principal después del login
     Route::get('/vistageneral', function () {
