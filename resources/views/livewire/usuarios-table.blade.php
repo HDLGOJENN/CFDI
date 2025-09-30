@@ -43,10 +43,10 @@
                         <td class="px-6 py-3">{{ $u->username }}</td>
                         <td class="px-6 py-3">{{ $u->name }}</td>
                         <td class="px-6 py-3">
-                            @if(isset($u->last_login_at))
-                                {{ optional($u->last_login_at)->format('d/m/Y') ?? '—' }}
+                            @if($u->last_accessed_at)
+                                {{ $u->last_accessed_at->format('d/m/Y H:i') }}
                             @else
-                                — {{-- si no tienes last_login_at en la BD --}}
+                                —
                             @endif
                         </td>
                     </tr>

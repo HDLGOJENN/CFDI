@@ -27,9 +27,9 @@ class VistaGeneral extends Component
 
         // Obtener solo la cuenta del usuario autenticado
         $cuenta = Account::query()
+        ->select('id', 'business_name', 'account_type', 'account_level') 
+        ->withCount(['users', 'children'])                                
         ->where('id', $user->account_id)
-        ->withCount(['users', 'children'])
-        ->select('id', 'business_name', 'account_type', 'account_level')
         ->first();
 
 

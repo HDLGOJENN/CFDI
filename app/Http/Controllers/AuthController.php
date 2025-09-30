@@ -32,6 +32,8 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
 
+
+
         // Intentar autenticación
         if (Auth::attempt([
             'username' => $request->username,
@@ -39,7 +41,11 @@ class AuthController extends Controller
         ])) {
             // Regenerar sesión para prevenir fixation attacks
             $request->session()->regenerate();
-            
+            //Guardar último acceso (campo: last_accessed_at)
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $user->last_accessed_at = now();  // ← asignación directa
+            $user->save();
             // Redirigir a vista general
             return redirect()->intended('/vistageneral');
         }
