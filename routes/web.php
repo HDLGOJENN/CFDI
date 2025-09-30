@@ -20,12 +20,12 @@ Route::post('/login', [AuthController::class, 'login']) ->name('login.attempt');
 
 });
 // Ruta para logout
-
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('prevent-back-history');
 
 // Grupo de rutas protegidas (requieren autenticación)
 Route::middleware(['auth'])->group(function () {
 
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('prevent-back-history');
+    
     
     // Ruta principal después del login
     Route::get('/vistageneral', function () {

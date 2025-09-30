@@ -4,50 +4,68 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Account;
+use Illuminate\Support\Facades\Auth;
 
 class VistaGeneral extends Component
 {
-    //$cuentas guardará los datos de cuentas que luego vas a mostrar en la tabla.
     public array $cuentas = [];
-    //$q es el texto que el usuario escribe en el buscador.
-    public string $q = '';
 
     public function mount(): void
     {
-        //Llama a loadData() para traer las cuentas desde la base de datos y mostrarlas desde el inicio.
         $this->loadData();
     }
 
-    // Hook genérico: se ejecuta cuando cambia cualquier propiedad
-    public function updated(string $name, $value): void
+    public function loadData(): void
     {
-        if ($name === 'q') {
-            $this->loadData();
+        // Obtener el usuario autenticado y su cuenta
+        $user = Auth::user();
+        
+        if (!$user || !$user->account_id) {
+            $this->cuentas = [];
+            return;
+        }
+
+        // Obtener solo la cuenta del usuario autenticado
+        $cuenta = Account::query()
+        ->where('id', $user->account_id)
+        ->withCount(['users', 'children'])
+        ->select('id', 'business_name', 'account_type', 'account_level')
+        ->first();
+
+
+        if ($cuenta) {
+            $this->cuentas = [[
+                'nombre'      => $cuenta->business_name,
+                'usuarios'    => $cuenta->users_count,
+                'subcuentas'  => $cuenta->children_count,
+                'tipo_cuenta' => $this->formatTipoCuenta($cuenta->account_type),
+                'nivel'       => $this->formatNivel($cuenta->account_level),
+            ]];
+        } else {
+            $this->cuentas = [];
         }
     }
 
-    //para hacer consulta a la tabla usuarios
-    public function loadData(): void
+    private function formatTipoCuenta(?string $tipo): string
     {
-        //Incluye el conteo de usuarios (withCount('users')).
-        $query = Account::query()->withCount('users');
-        //si no buscamos nada entonces se filtra por business_name
-        if (trim($this->q) !== '') {
-            $query->where('business_name', 'like', '%'.trim($this->q).'%');
-        }
-        //Selecciona solo ciertos campos, ordena por nombre, limita a 50 resultados.
-        $this->cuentas = $query
-            ->select('id','business_name','account_level')
-            ->orderBy('business_name')
-            ->take(50)
-            ->get()
-            ->map(fn($a) => [
-                'nombre'   => $a->business_name,
-                'usuarios' => $a->users_count,
-                'nivel'    => $a->account_level ?? '—',
-            ])->toArray();
+        return match($tipo) {
+            'basico' => 'Básico',
+            'intermedio' => 'Intermedio',
+            'avanzado' => 'Avanzado',
+            default => 'Básico'
+        };
     }
-    //Livewire se encarga de pasarle las propiedades ($cuentas, $q) automáticamente a la vista.
+
+    private function formatNivel(?int $nivel): string
+    {
+        return match($nivel) {
+            0 => 'Administrador',
+            1 => 'Primer nivel',
+            2 => 'Segundo nivel',
+            default => '—'
+        };
+    }
+
     public function render()
     {
         return view('livewire.vista-general');
